@@ -6,7 +6,7 @@
 	<!-- Tabs -->
 	
 	<extension id="ExampleWorkspaceTab" point="org.protege.editor.core.application.WorkspaceTab">
-		<label value="Example Tab"/>
+		<label value="Group8 Tab"/>
 		<class value="org.protege.editor.owl.ui.OWLWorkspaceViewsTab"/>
 		<index value="X"/>
 		<editorKitId value="OWLEditorKit"/>
@@ -14,7 +14,7 @@
    </extension>
 
 	<extension id="ExampleWorkspaceTab2" point="org.protege.editor.core.application.WorkspaceTab">
-		<label value="Example Tab (2)"/>
+		<label value="Group8 Tab (2)"/>
 		<class value="edu.stanford.bmir.protege.examples.tab.ExampleWorkspaceTab2"/>
 		<index value="Y"/>
 		<editorKitId value="OWLEditorKit"/>
@@ -24,7 +24,7 @@
 	<!-- View -->
 
 	<extension id="ExampleViewComponent" point="org.protege.editor.core.application.ViewComponent">
-		<label value="Example view component" />
+		<label value="Ontology view component" />
 		<class value="edu.stanford.bmir.protege.examples.view.ExampleViewComponent" />
 		<headerColor value="@org.protege.ontologycolor"/>
 		<category value="@org.protege.ontologycategory" />
