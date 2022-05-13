@@ -13,6 +13,7 @@ public class Metrics extends JPanel {
     private JButton showButton = new JButton("Show");
 
     private JLabel textComponent = new JLabel("It is the summary of the ontology");
+    private JLabel textComponentForOntology = new JLabel("It is the summary of the ontology");
 
     private OWLModelManager modelManager;
 
@@ -33,8 +34,10 @@ public class Metrics extends JPanel {
         showButton.addActionListener(showAction);
 
         add(textComponent);
+        add(textComponentForOntology);
         add(showButton);
     }
+
 
     public void dispose() {
         modelManager.removeListener(modelListener);
@@ -48,5 +51,7 @@ public class Metrics extends JPanel {
             String word = s.split("#")[1];
             return word.substring(0, word.length() - 1);
             }).collect(Collectors.toList()));
+
+        textComponentForOntology.setText("Owl ontology strategy name : " + modelManager.getActiveOntologiesStrategy().getName());
     }
 }
