@@ -1,0 +1,99 @@
+package edu.stanford.bmir.protege.examples.view;
+
+import edu.stanford.bmir.protege.examples.figures.Circle;
+import org.protege.editor.owl.model.OWLModelManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static edu.stanford.bmir.protege.examples.view.GeneratorService.randomColor;
+import static edu.stanford.bmir.protege.examples.view.GeneratorService.randomPoint;
+
+public class MyWindow extends JFrame implements ActionListener {
+    private OWLModelManager owlModelManager;
+    private JPanel jPanel;
+
+    public MyWindow(OWLModelManager owlModelManager) {
+        this.owlModelManager = owlModelManager;
+        init();
+
+    }
+
+    private void init() {
+
+        initializeComponents();
+    }
+
+    private void initializeComponents() {
+
+        Container rootCont = this.getContentPane();
+        jPanel = new JPanel();
+        JButton showButton = new JButton("Show");
+        showButton.addActionListener(this);
+        jPanel.setBackground(Color.green);
+        rootCont.add(jPanel, BorderLayout.CENTER);
+        jPanel.add(showButton, 0);
+
+    }
+
+    private static final Logger log = LoggerFactory.getLogger(MyWindow.class);
+
+    private final ExampleViewComponent exampleViewComponent = new ExampleViewComponent();
+
+    private void drawFigures() {
+        List<String> names = owlModelManager.getActiveOntology()
+                .getClassesInSignature()
+                .stream().map(Object::toString).map(s -> {
+                    String word = s.split("#")[1];
+                    return word.substring(0, word.length() - 1);
+                }).collect(Collectors.toList());
+        Graphics gr = jPanel.getGraphics();
+        for (String name : names) {
+            log.info(name);
+            Circle shape = GeneratorService.randomCircle();
+            gr.setColor(shape.getColor());
+            gr.drawString(name, shape.getP().getX(), shape.getP().getY());
+            gr.drawOval(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
+            if (shape.isFilled()) {
+                gr.fillOval(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
+            }
+        }
+        log.info("Figure is drawn");
+    }
+    @Override
+    public void paint(Graphics g) {
+        drawFigures();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() instanceof JButton) {
+            switch (e.getActionCommand().trim()) {
+                case "Show":
+                    int reply = JOptionPane.showConfirmDialog(this, "Figure implementation will be shown up. Are you sure?", "Be Careful!", JOptionPane.YES_NO_OPTION);
+                    if (reply == JOptionPane.YES_OPTION) {
+                        drawFigures();
+                    }
+                    break;
+                case "Clear":
+                    repaint();
+                    break;
+                default:
+                    drawFigures();
+                    break;
+
+            }
+        }
+
+    }
+
+    public static Circle randomCircle() {
+        return new Circle((int) (Math.random() * 1.5) != 0, randomColor(), randomPoint(), (int) (Math.random() * 50), (int) (Math.random() * 50));
+    }
+}

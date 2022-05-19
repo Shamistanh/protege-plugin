@@ -5,10 +5,11 @@ import org.protege.editor.owl.model.event.EventType;
 import org.protege.editor.owl.model.event.OWLModelManagerListener;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.stream.Collectors;
 
-public class Metrics extends JPanel {
+public class Metrics extends JPanel  {
 
     private JButton showButton = new JButton("Show");
 
@@ -53,5 +54,6 @@ public class Metrics extends JPanel {
             }).collect(Collectors.toList()));
 
         textComponentForOntology.setText("Owl ontology strategy name : " + modelManager.getActiveOntologiesStrategy().getName());
+        textComponentForOntology.setVerticalTextPosition(SwingConstants.CENTER);
     }
 }
