@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 
+import static edu.stanford.bmir.protege.examples.view.GeneratorService.randomColor;
+import static edu.stanford.bmir.protege.examples.view.GeneratorService.randomPoint;
+
 public class ExampleViewComponent extends AbstractOWLViewComponent{
 
     private static final Logger log = LoggerFactory.getLogger(ExampleViewComponent.class);
@@ -27,7 +30,6 @@ public class ExampleViewComponent extends AbstractOWLViewComponent{
         metricsComponent.setBackground(Color.green);
         add(metricsComponent, BorderLayout.CENTER);
         log.info("Example View Component initialized");
-
         MyWindow window = new MyWindow(getOWLModelManager());
         //window.setTitle("Another one");
 
@@ -37,10 +39,11 @@ public class ExampleViewComponent extends AbstractOWLViewComponent{
         window.setLocationRelativeTo(null);
         window.setVisible(true);
 
-//        window.setResizable(false);
+        //        window.setResizable(false);
 
 
         window.getContentPane().setBackground(Color.RED);
+
     }
 
 	@Override
@@ -48,6 +51,11 @@ public class ExampleViewComponent extends AbstractOWLViewComponent{
 		metricsComponent.dispose();
 	}
 
+
+
+    public static Circle randomCircle() {
+        return new Circle((int) (Math.random() * 1.5) != 0, randomColor(), randomPoint(), (int) (Math.random() * 50), (int) (Math.random() * 50));
+    }
 
 
 }

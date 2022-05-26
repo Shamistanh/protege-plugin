@@ -17,6 +17,7 @@ import static edu.stanford.bmir.protege.examples.view.GeneratorService.randomPoi
 
 public class MyWindow extends JFrame implements ActionListener {
     private OWLModelManager owlModelManager;
+    private Boolean isClearClicked = true;
     private JPanel jPanel;
 
     public MyWindow(OWLModelManager owlModelManager) {
@@ -31,14 +32,27 @@ public class MyWindow extends JFrame implements ActionListener {
     }
 
     private void initializeComponents() {
-
+        GridBagConstraints gbc = new GridBagConstraints();
         Container rootCont = this.getContentPane();
         jPanel = new JPanel();
         JButton showButton = new JButton("Show");
         showButton.addActionListener(this);
-        jPanel.setBackground(Color.green);
+        JButton clearButton = new JButton("Clear");
+        clearButton.addActionListener(this);
+
+        JButton exitButton = new JButton("Exit");
+        exitButton.addActionListener(this);
+
         rootCont.add(jPanel, BorderLayout.CENTER);
-        jPanel.add(showButton, 0);
+        gbc.gridx = 0;
+
+        gbc.gridy = 0;
+        jPanel.add(showButton, gbc);
+        gbc.gridy = 1;
+        jPanel.add(clearButton, gbc);
+        gbc.gridy = 2;
+        jPanel.add(exitButton, gbc);
+        rootCont.add(jPanel, BorderLayout.CENTER);
 
     }
 
@@ -66,9 +80,13 @@ public class MyWindow extends JFrame implements ActionListener {
         }
         log.info("Figure is drawn");
     }
+
     @Override
     public void paint(Graphics g) {
-        drawFigures();
+        super.paint(g);
+        if (!isClearClicked) {
+            drawFigures();
+        }
     }
 
     @Override
@@ -82,11 +100,15 @@ public class MyWindow extends JFrame implements ActionListener {
                     }
                     break;
                 case "Clear":
+                    log.info("Clear is clicked");
+                    isClearClicked = true;
                     repaint();
                     break;
-                default:
-                    drawFigures();
-                    break;
+                case "Exit":
+                    reply = JOptionPane.showConfirmDialog(this, "Are you sure to leave?", "Be Careful!", JOptionPane.YES_NO_OPTION);
+                    if (reply == JOptionPane.YES_OPTION) {
+                        System.exit(0);
+                    }
 
             }
         }
