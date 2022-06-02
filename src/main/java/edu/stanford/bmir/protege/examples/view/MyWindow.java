@@ -18,6 +18,8 @@ import static edu.stanford.bmir.protege.examples.view.GeneratorService.randomPoi
 public class MyWindow extends JFrame implements ActionListener {
     private OWLModelManager owlModelManager;
     private Boolean isClearClicked = true;
+    private Boolean isShowFiguresClicked = false;
+    private Boolean isShowSumClicked = false;
     private JPanel jPanel;
 
     public MyWindow(OWLModelManager owlModelManager) {
@@ -35,8 +37,10 @@ public class MyWindow extends JFrame implements ActionListener {
         GridBagConstraints gbc = new GridBagConstraints();
         Container rootCont = this.getContentPane();
         jPanel = new JPanel();
-        JButton showButton = new JButton("Show");
+        JButton showButton = new JButton("Show Figures");
         showButton.addActionListener(this);
+        JButton showSumButton = new JButton("ShowSummary");
+        showSumButton.addActionListener(this);
         JButton clearButton = new JButton("Clear");
         clearButton.addActionListener(this);
 
@@ -49,8 +53,10 @@ public class MyWindow extends JFrame implements ActionListener {
         gbc.gridy = 0;
         jPanel.add(showButton, gbc);
         gbc.gridy = 1;
-        jPanel.add(clearButton, gbc);
+        jPanel.add(showSumButton, gbc);
         gbc.gridy = 2;
+        jPanel.add(clearButton, gbc);
+        gbc.gridy = 3;
         jPanel.add(exitButton, gbc);
         rootCont.add(jPanel, BorderLayout.CENTER);
 
@@ -61,54 +67,92 @@ public class MyWindow extends JFrame implements ActionListener {
     private final ExampleViewComponent exampleViewComponent = new ExampleViewComponent();
 
     private void drawFigures() {
-        List<String> names = owlModelManager.getActiveOntology()
-                .getClassesInSignature()
-                .stream().map(Object::toString).map(s -> {
-                    String word = s.split("#")[1];
-                    return word.substring(0, word.length() - 1);
-                }).collect(Collectors.toList());
-        Graphics gr = jPanel.getGraphics();
-        for (String name : names) {
-            log.info(name);
-            Circle shape = GeneratorService.randomCircle();
-            gr.setColor(shape.getColor());
-            gr.drawString(name, shape.getP().getX(), shape.getP().getY());
-            gr.drawOval(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
-            if (shape.isFilled()) {
-                gr.fillOval(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
+        if (!isClearClicked){
+        if (isShowFiguresClicked) {
+
+            List<String> names = owlModelManager.getActiveOntology()
+                    .getClassesInSignature()
+                    .stream().map(Object::toString).map(s -> {
+                        String word = s.split("#")[1];
+                        return word.substring(0, word.length() - 1);
+                    }).collect(Collectors.toList());
+            Graphics gr = jPanel.getGraphics();
+            for (String name : names) {
+                log.info(name);
+                Circle shape = GeneratorService.randomCircle();
+                gr.setColor(shape.getColor());
+                gr.drawString(name, shape.getP().getX(), shape.getP().getY());
+                gr.drawOval(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
+                if (shape.isFilled()) {
+                    gr.fillOval(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
+                }
             }
         }
+        if (isShowSumClicked){
+            showSummary();
+        }
+        }
         log.info("Figure is drawn");
+    }
+    private void showSummary(){
+        String data[][]={ {"Axiom Count",owlModelManager.getActiveOntology().getAxiomCount()+""},
+                {"Logical Axiom Count",owlModelManager.getActiveOntology().getLogicalAxiomCount()+""},
+                {"Nested Expression",owlModelManager.getActiveOntology().getNestedClassExpressions().iterator().next().getClassExpressionType()+""}};
+
+        String column[]={"KEY","VALUE"};
+        JTable jt=new JTable(data,column);
+        jt.setBounds(30,400,400,300);
+        jt.setSize(400,50);
+        JScrollPane sp=new JScrollPane(jt);
+        this.add(sp);
+        jPanel.setLayout(jPanel.getLayout());
+        jPanel.add(jt, BorderLayout.PAGE_END);
+        jPanel.setVisible(true);
+        if (isClearClicked){
+            jPanel.setVisible(false);
+        }
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        if (!isClearClicked) {
             drawFigures();
-        }
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() instanceof JButton) {
             switch (e.getActionCommand().trim()) {
-                case "Show":
+                case "Show Figures":
                     int reply = JOptionPane.showConfirmDialog(this, "Figure implementation will be shown up. Are you sure?", "Be Careful!", JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
-                        drawFigures();
+                        isShowFiguresClicked = true;
+                        isShowSumClicked = false;
+                        isClearClicked = false;
+                       // drawFigures();
+                        paint(this.getGraphics());
                     }
                     break;
+                case "ShowSummary":
+                    isShowSumClicked = true;
+                    isShowFiguresClicked = false;
+                    isClearClicked = false;
+                    paint(this.getGraphics());
+                    log.info("Summary is clicked");
+                    break;
+
                 case "Clear":
                     log.info("Clear is clicked");
                     isClearClicked = true;
-                    repaint();
+                   repaint();
                     break;
                 case "Exit":
                     reply = JOptionPane.showConfirmDialog(this, "Are you sure to leave?", "Be Careful!", JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
                         System.exit(0);
                     }
+
 
             }
         }

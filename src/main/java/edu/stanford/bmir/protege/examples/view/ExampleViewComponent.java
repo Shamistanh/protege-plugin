@@ -27,7 +27,6 @@ public class ExampleViewComponent extends AbstractOWLViewComponent{
     protected void initialiseOWLView() throws Exception {
         setLayout(new BorderLayout());
         metricsComponent = new Metrics(getOWLModelManager());
-        metricsComponent.setBackground(Color.green);
         add(metricsComponent, BorderLayout.CENTER);
         log.info("Example View Component initialized");
         MyWindow window = new MyWindow(getOWLModelManager());
@@ -42,7 +41,6 @@ public class ExampleViewComponent extends AbstractOWLViewComponent{
         //        window.setResizable(false);
 
 
-        window.getContentPane().setBackground(Color.RED);
 
     }
 
