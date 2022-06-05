@@ -2,8 +2,10 @@ package edu.stanford.bmir.protege.examples.view;
 
 import edu.stanford.bmir.protege.examples.figures.Circle;
 import org.protege.editor.owl.model.OWLModelManager;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,15 +14,18 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static edu.stanford.bmir.protege.examples.view.GeneratorService.randomColor;
-import static edu.stanford.bmir.protege.examples.view.GeneratorService.randomPoint;
 
 public class MyWindow extends JFrame implements ActionListener {
     private OWLModelManager owlModelManager;
     private Boolean isClearClicked = true;
     private Boolean isShowFiguresClicked = false;
     private Boolean isShowSumClicked = false;
+    private Boolean isWindowActive = false;
     private JPanel jPanel;
+
+    public Boolean getWindowActive() {
+        return isWindowActive;
+    }
 
     public MyWindow(OWLModelManager owlModelManager) {
         this.owlModelManager = owlModelManager;
@@ -67,9 +72,10 @@ public class MyWindow extends JFrame implements ActionListener {
     private final ExampleViewComponent exampleViewComponent = new ExampleViewComponent();
 
     private void drawFigures() {
+
+
         if (!isClearClicked){
         if (isShowFiguresClicked) {
-
             List<String> names = owlModelManager.getActiveOntology()
                     .getClassesInSignature()
                     .stream().map(Object::toString).map(s -> {
@@ -77,15 +83,18 @@ public class MyWindow extends JFrame implements ActionListener {
                         return word.substring(0, word.length() - 1);
                     }).collect(Collectors.toList());
             Graphics gr = jPanel.getGraphics();
+            int y = 50;
+            int x = 50;
             for (String name : names) {
                 log.info(name);
                 Circle shape = GeneratorService.randomCircle();
                 gr.setColor(shape.getColor());
-                gr.drawString(name, shape.getP().getX(), shape.getP().getY());
-                gr.drawOval(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
+                gr.drawString(name, x, y);
+                gr.drawOval(x,y, y-10, y-10);
                 if (shape.isFilled()) {
-                    gr.fillOval(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
+                    gr.fillOval(x, y,y-10, y-10);
                 }
+                x = x + 50;
             }
         }
         if (isShowSumClicked){
@@ -97,7 +106,7 @@ public class MyWindow extends JFrame implements ActionListener {
     private void showSummary(){
         String data[][]={ {"Axiom Count",owlModelManager.getActiveOntology().getAxiomCount()+""},
                 {"Logical Axiom Count",owlModelManager.getActiveOntology().getLogicalAxiomCount()+""},
-                {"Nested Expression",owlModelManager.getActiveOntology().getNestedClassExpressions().iterator().next().getClassExpressionType()+""}};
+                {"Nested Expression",owlModelManager.getActiveOntology().getNestedClassExpressions().iterator().next().toString()}};
 
         String column[]={"KEY","VALUE"};
         JTable jt=new JTable(data,column);
@@ -130,7 +139,6 @@ public class MyWindow extends JFrame implements ActionListener {
                         isShowFiguresClicked = true;
                         isShowSumClicked = false;
                         isClearClicked = false;
-                       // drawFigures();
                         paint(this.getGraphics());
                     }
                     break;
@@ -152,14 +160,8 @@ public class MyWindow extends JFrame implements ActionListener {
                     if (reply == JOptionPane.YES_OPTION) {
                         System.exit(0);
                     }
-
-
             }
         }
 
-    }
-
-    public static Circle randomCircle() {
-        return new Circle((int) (Math.random() * 1.5) != 0, randomColor(), randomPoint(), (int) (Math.random() * 50), (int) (Math.random() * 50));
     }
 }
