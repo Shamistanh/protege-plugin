@@ -1,10 +1,6 @@
 package edu.stanford.bmir.protege.examples.view;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import edu.stanford.bmir.protege.examples.figures.Circle;
 import org.protege.editor.owl.ui.view.AbstractOWLViewComponent;
@@ -16,9 +12,9 @@ import javax.swing.*;
 import static edu.stanford.bmir.protege.examples.view.GeneratorService.randomColor;
 import static edu.stanford.bmir.protege.examples.view.GeneratorService.randomPoint;
 
-public class ExampleViewComponent extends AbstractOWLViewComponent{
+public class MainViewComponent extends AbstractOWLViewComponent{
 
-    private static final Logger log = LoggerFactory.getLogger(ExampleViewComponent.class);
+    private static final Logger log = LoggerFactory.getLogger(MainViewComponent.class);
 
     private Metrics metricsComponent;
 
@@ -29,16 +25,6 @@ public class ExampleViewComponent extends AbstractOWLViewComponent{
         metricsComponent = new Metrics(getOWLModelManager());
         add(metricsComponent, BorderLayout.CENTER);
         log.info("Example View Component initialized");
-        if (metricsComponent.getMaxButton()){
-        MyWindow window = new MyWindow(getOWLModelManager());
-
-        window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        window.setSize(500, 500);
-        window.setMinimumSize(new Dimension(150, 150));
-        window.setLocationRelativeTo(null);
-        window.setVisible(true);
-        }
-
 
     }
 

@@ -25,7 +25,7 @@
 
 	<extension id="ExampleViewComponent" point="org.protege.editor.core.application.ViewComponent">
 		<label value="Ontology view component" />
-		<class value="edu.stanford.bmir.protege.examples.view.ExampleViewComponent" />
+		<class value="edu.stanford.bmir.protege.examples.view.MainViewComponent" />
 		<headerColor value="@org.protege.ontologycolor"/>
 		<category value="@org.protege.ontologycategory" />
 	</extension>

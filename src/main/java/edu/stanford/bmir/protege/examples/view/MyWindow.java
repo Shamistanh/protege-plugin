@@ -2,7 +2,10 @@ package edu.stanford.bmir.protege.examples.view;
 
 import edu.stanford.bmir.protege.examples.figures.Circle;
 import org.protege.editor.owl.model.OWLModelManager;
-import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +25,8 @@ public class MyWindow extends JFrame implements ActionListener {
     private Boolean isShowSumClicked = false;
     private Boolean isWindowActive = false;
     private JPanel jPanel;
+    static JTextField textField;
+    static JFrame f;
 
     public Boolean getWindowActive() {
         return isWindowActive;
@@ -44,32 +49,42 @@ public class MyWindow extends JFrame implements ActionListener {
         jPanel = new JPanel();
         JButton showButton = new JButton("Show Figures");
         showButton.addActionListener(this);
-        JButton showSumButton = new JButton("ShowSummary");
-        showSumButton.addActionListener(this);
+//        JButton showSumButton = new JButton("ShowSummary");
+//        showSumButton.addActionListener(this);
         JButton clearButton = new JButton("Clear");
         clearButton.addActionListener(this);
 
         JButton exitButton = new JButton("Exit");
         exitButton.addActionListener(this);
+        textField = new JTextField("Ontology");
+        JButton submitButton = new JButton("Fetch");
+        submitButton.addActionListener(this);
 
         rootCont.add(jPanel, BorderLayout.CENTER);
         gbc.gridx = 0;
 
         gbc.gridy = 0;
         jPanel.add(showButton, gbc);
-        gbc.gridy = 1;
-        jPanel.add(showSumButton, gbc);
+//        gbc.gridy = 1;
+//        jPanel.add(showSumButton, gbc);
         gbc.gridy = 2;
         jPanel.add(clearButton, gbc);
         gbc.gridy = 3;
         jPanel.add(exitButton, gbc);
+        textField.setLocation(160,200);
+        textField.setSize(700,20);
+        this.add(textField);
+        submitButton.setLocation(90,200);
+        submitButton.setSize(60,20);
+        this.add(submitButton);
         rootCont.add(jPanel, BorderLayout.CENTER);
+
 
     }
 
     private static final Logger log = LoggerFactory.getLogger(MyWindow.class);
 
-    private final ExampleViewComponent exampleViewComponent = new ExampleViewComponent();
+    private final MainViewComponent mainViewComponent = new MainViewComponent();
 
     private void drawFigures() {
 
@@ -79,12 +94,17 @@ public class MyWindow extends JFrame implements ActionListener {
             List<String> names = owlModelManager.getActiveOntology()
                     .getClassesInSignature()
                     .stream().map(Object::toString).map(s -> {
-                        String word = s.split("#")[1];
-                        return word.substring(0, word.length() - 1);
+                        String word = s;
+                        String[] split = s.split("#");
+                        if (split.length==2){
+                            word = split[1];
+                            word = word.substring(0, word.length() - 1);
+                        }
+                        return word;
                     }).collect(Collectors.toList());
             Graphics gr = jPanel.getGraphics();
-            int y = 50;
-            int x = 50;
+            int y = 40;
+            int x = 40;
             for (String name : names) {
                 log.info(name);
                 Circle shape = GeneratorService.randomCircle();
@@ -121,7 +141,22 @@ public class MyWindow extends JFrame implements ActionListener {
             jPanel.setVisible(false);
         }
     }
+    private void fetchOntology(String path) {
 
+        try {
+            OWLOntologyManager man = OWLManager.createOWLOntologyManager();
+            IRI webOntology = IRI.create(path);
+            OWLOntology o = man.loadOntology(webOntology);
+            owlModelManager.setActiveOntology(o);
+        }catch (Exception ex){
+
+            log.error("Following error occurred " + ex.getMessage());
+            f=new JFrame();
+            JOptionPane.showMessageDialog(f, "We are facing problem while fetching ontology");
+            ex.printStackTrace();
+
+        }
+    }
     @Override
     public void paint(Graphics g) {
         super.paint(g);
@@ -155,10 +190,15 @@ public class MyWindow extends JFrame implements ActionListener {
                     isClearClicked = true;
                    repaint();
                     break;
+                case "Fetch":
+                    String path = textField.getText();
+                    log.info("Fetched path " + path);
+                    fetchOntology(path);
+                    break;
                 case "Exit":
-                    reply = JOptionPane.showConfirmDialog(this, "Are you sure to leave?", "Be Careful!", JOptionPane.YES_NO_OPTION);
+                    reply = JOptionPane.showConfirmDialog(this, "Are you sure to Minimize?", "Sure?", JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
-                        System.exit(0);
+                        this.dispose();
                     }
             }
         }
