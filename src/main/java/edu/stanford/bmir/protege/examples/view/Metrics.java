@@ -127,6 +127,7 @@ public class Metrics extends JPanel implements ActionListener {
 
         if (!isClearClicked) {
             if (isShowFiguresClicked) {
+                int cnt = 0;
                 List<String> names = owlModelManager.getActiveOntology()
                         .getClassesInSignature()
                         .stream().map(Object::toString).map(s -> {
@@ -136,19 +137,29 @@ public class Metrics extends JPanel implements ActionListener {
                                 word = split[1];
                                 word = word.substring(0, word.length() - 1);
                             }
-
                             return word;
                         }).collect(Collectors.toList());
                 Graphics gr = this.getGraphics();
+                int y = 100;
+                int width = 50;
+                int x = 40;
                 for (String name : names) {
+
+                    if (this.getWidth() < x-10){
+                        y = y + 70;
+                        x = 40;
+                        cnt = 0;
+                    }
                     log.info(name);
                     Circle shape = GeneratorService.randomCircle();
                     gr.setColor(shape.getColor());
-                    gr.drawString(name, shape.getP().getX(), shape.getP().getY());
-                    gr.drawOval(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
+                    gr.drawString(name, x, y);
+                    gr.drawOval(x,y, width, width);
                     if (shape.isFilled()) {
-                        gr.fillOval(shape.getP().getX(), shape.getP().getY(), shape.getWidth(), shape.getHeight());
+                        gr.fillOval(x, y,width, width);
                     }
+                    x = x + 110;
+                    cnt++;
                 }
             }
             if (isShowSumClicked) {
@@ -218,6 +229,7 @@ public class Metrics extends JPanel implements ActionListener {
                     window.setMinimumSize(new Dimension(150, 150));
                     window.setLocationRelativeTo(null);
                     window.setVisible(true);
+                    window.setResizable(false);
                     break;
                 case "Fetch":
                     String path = textField.getText();

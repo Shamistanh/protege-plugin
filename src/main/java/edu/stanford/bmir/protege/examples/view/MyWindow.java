@@ -71,10 +71,10 @@ public class MyWindow extends JFrame implements ActionListener {
         jPanel.add(clearButton, gbc);
         gbc.gridy = 3;
         jPanel.add(exitButton, gbc);
-        textField.setLocation(160,200);
+        textField.setLocation(160,100);
         textField.setSize(700,20);
         this.add(textField);
-        submitButton.setLocation(90,200);
+        submitButton.setLocation(90,100);
         submitButton.setSize(60,20);
         this.add(submitButton);
         rootCont.add(jPanel, BorderLayout.CENTER);
@@ -91,6 +91,7 @@ public class MyWindow extends JFrame implements ActionListener {
 
         if (!isClearClicked){
         if (isShowFiguresClicked) {
+            int cnt = 0;
             List<String> names = owlModelManager.getActiveOntology()
                     .getClassesInSignature()
                     .stream().map(Object::toString).map(s -> {
@@ -103,18 +104,26 @@ public class MyWindow extends JFrame implements ActionListener {
                         return word;
                     }).collect(Collectors.toList());
             Graphics gr = jPanel.getGraphics();
-            int y = 40;
+            int y = 200;
+            int width = 50;
             int x = 40;
             for (String name : names) {
+
+                if (cnt > 6){
+                    y = y + 70;
+                    x = 40;
+                    cnt = 0;
+                }
                 log.info(name);
                 Circle shape = GeneratorService.randomCircle();
                 gr.setColor(shape.getColor());
                 gr.drawString(name, x, y);
-                gr.drawOval(x,y, y-10, y-10);
+                gr.drawOval(x,y, width, width);
                 if (shape.isFilled()) {
-                    gr.fillOval(x, y,y-10, y-10);
+                    gr.fillOval(x, y,width, width);
                 }
-                x = x + 50;
+                x = x + 110;
+                cnt++;
             }
         }
         if (isShowSumClicked){
