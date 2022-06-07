@@ -25,7 +25,7 @@ public class Metrics extends JPanel implements ActionListener {
     private Boolean isClearClicked = true;
     private Boolean isShowFiguresClicked = false;
     private Boolean isShowSumClicked = false;
-    static JTextField textField;
+    static JTextArea textField;
     static JFrame f;
 
 
@@ -59,7 +59,7 @@ public class Metrics extends JPanel implements ActionListener {
 
         JButton exitButton = new JButton("Exit");
         exitButton.addActionListener(this);
-        textField = new JTextField("Ontology");
+        textField = new JTextArea("Ontology");
         JButton submitButton = new JButton("Fetch");
         submitButton.addActionListener(this);
 
@@ -109,7 +109,6 @@ public class Metrics extends JPanel implements ActionListener {
     }
 
     private void fetchOntology(String path) {
-
         try {
             OWLOntologyManager man = OWLManager.createOWLOntologyManager();
             IRI webOntology = IRI.create(path);
@@ -121,7 +120,6 @@ public class Metrics extends JPanel implements ActionListener {
             f=new JFrame();
             JOptionPane.showMessageDialog(f, "We are facing problem while fetching ontology");
             ex.printStackTrace();
-
         }
     }
 

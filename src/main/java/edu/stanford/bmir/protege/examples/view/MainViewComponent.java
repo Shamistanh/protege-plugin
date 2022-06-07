@@ -23,7 +23,7 @@ public class MainViewComponent extends AbstractOWLViewComponent{
     protected void initialiseOWLView() throws Exception {
         setLayout(new BorderLayout());
         metricsComponent = new Metrics(getOWLModelManager());
-        add(metricsComponent, BorderLayout.CENTER);
+        add(metricsComponent);
         log.info("Example View Component initialized");
 
     }
