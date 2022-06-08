@@ -25,6 +25,7 @@ public class Metrics extends JPanel implements ActionListener {
     private Boolean isClearClicked = true;
     private Boolean isShowFiguresClicked = false;
     private Boolean isShowSumClicked = false;
+    private Boolean isRelationClicked = false;
     static JTextArea textField;
     static JFrame f;
 
@@ -50,11 +51,11 @@ public class Metrics extends JPanel implements ActionListener {
         GridBagConstraints gbc = new GridBagConstraints();
         JButton showButton = new JButton("Show Figures");
         showButton.addActionListener(this);
-//        JButton showSumButton = new JButton("ShowSummary");
-//        showSumButton.addActionListener(this);
+        JButton showRelationsButton = new JButton("Show Relations");
+        showRelationsButton.addActionListener(this);
         JButton clearButton = new JButton("Clear");
         clearButton.addActionListener(this);
-        JButton maxButton = new JButton("Maximize Button");
+        JButton maxButton = new JButton("Maximize");
         maxButton.addActionListener(this);
 
         JButton exitButton = new JButton("Exit");
@@ -67,8 +68,8 @@ public class Metrics extends JPanel implements ActionListener {
 
         gbc.gridy = 0;
         this.add(showButton, gbc);
-//        gbc.gridy = 1;
-//        this.add(showSumButton, gbc);
+        gbc.gridy = 1;
+        this.add(showRelationsButton, gbc);
         gbc.gridy = 2;
         this.add(clearButton, gbc);
         gbc.gridy = 3;
@@ -124,7 +125,6 @@ public class Metrics extends JPanel implements ActionListener {
     }
 
     private void drawFigures() {
-
         if (!isClearClicked) {
             if (isShowFiguresClicked) {
                 int cnt = 0;
@@ -164,11 +164,54 @@ public class Metrics extends JPanel implements ActionListener {
             }
             if (isShowSumClicked) {
                 showSummary();
+            }else if (isRelationClicked){
+                showSubclasses();
+                isRelationClicked = false;
             }
         }
         isClearClicked = true;
         log.info("Figure is drawn");
     }
+    private void showSubclasses(){
+        int x = 50;
+        int y = 100;
+        int width = 80;
+        int height = 80;
+        for (final OWLSubClassOfAxiom subClasse : owlModelManager.getActiveOntology().getAxioms(AxiomType.SUBCLASS_OF))
+        {
+            if (subClasse.getSuperClass() instanceof OWLClass
+                    && subClasse.getSubClass() instanceof OWLClass)
+            {
+                String subclass = subClasse.getSubClass().toString().split("#")[1];
+                subclass = subclass.substring(0, subclass.length()-1);
+
+                String superclass = subClasse.getSuperClass().toString().split("#")[1];
+                superclass = superclass.substring(0, superclass.length()-1);
+
+                Graphics gr = this.getGraphics();
+
+                gr.setColor(GeneratorService.randomColor());
+                gr.drawString(subclass, x, y);
+                gr.drawOval(x,y + 10, width, height);
+                gr.fillOval(x,y + 10, width, height);
+
+                gr.setColor(GeneratorService.randomColor());
+                gr.drawString(superclass, x + 110, y);
+                gr.drawRect(x + 110,y + 10, width, height);
+                gr.fillRect(x + 110,y + 10 , width, height);
+
+                y = y + 110;
+                if (y > this.getHeight()-100){
+                    y = 100;
+                    x = x + 300;
+                }
+
+                log.info(subClasse.getSubClass()
+                        + " extends " + subClasse.getSuperClass());
+            }
+        }
+    }
+
 
     private void showSummary() {
         String data[][] = {{"Axiom Count", owlModelManager.getActiveOntology().getAxiomCount() + ""},
@@ -209,12 +252,10 @@ public class Metrics extends JPanel implements ActionListener {
                         paint(this.getGraphics());
                     }
                     break;
-                case "ShowSummary":
-                    isShowSumClicked = true;
-                    isShowFiguresClicked = false;
-                    isClearClicked = false;
-                    paint(this.getGraphics());
-                    log.info("Summary is clicked");
+                case "Show Relations":
+                    isRelationClicked = true;
+                    showSubclasses();
+                    log.info("Relations is clicked");
                     break;
 
                 case "Clear":
@@ -222,7 +263,8 @@ public class Metrics extends JPanel implements ActionListener {
                     isClearClicked = true;
                     repaint();
                     break;
-                case "Maximize Button":
+                case "Maximize":
+                    log.info("Maximize button is clicked");
                     MyWindow window = new MyWindow(owlModelManager);
                     window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                     window.setSize(900, 900);

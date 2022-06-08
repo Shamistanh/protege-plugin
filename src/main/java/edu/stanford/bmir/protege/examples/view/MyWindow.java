@@ -3,9 +3,7 @@ package edu.stanford.bmir.protege.examples.view;
 import edu.stanford.bmir.protege.examples.figures.Circle;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +22,7 @@ public class MyWindow extends JFrame implements ActionListener {
     private Boolean isShowFiguresClicked = false;
     private Boolean isShowSumClicked = false;
     private Boolean isWindowActive = false;
+    private Boolean isRelationClicked = false;
     private JPanel jPanel;
     static JTextField textField;
     static JFrame f;
@@ -49,12 +48,12 @@ public class MyWindow extends JFrame implements ActionListener {
         jPanel = new JPanel();
         JButton showButton = new JButton("Show Figures");
         showButton.addActionListener(this);
-//        JButton showSumButton = new JButton("ShowSummary");
-//        showSumButton.addActionListener(this);
+        JButton showRelationsButton = new JButton("Show Relations");
+        showRelationsButton.addActionListener(this);
         JButton clearButton = new JButton("Clear");
         clearButton.addActionListener(this);
 
-        JButton exitButton = new JButton("Exit");
+        JButton exitButton = new JButton("Minimize");
         exitButton.addActionListener(this);
         textField = new JTextField("Ontology");
         JButton submitButton = new JButton("Fetch");
@@ -65,16 +64,16 @@ public class MyWindow extends JFrame implements ActionListener {
 
         gbc.gridy = 0;
         jPanel.add(showButton, gbc);
-//        gbc.gridy = 1;
-//        jPanel.add(showSumButton, gbc);
+        gbc.gridy = 1;
+        jPanel.add(showRelationsButton, gbc);
         gbc.gridy = 2;
         jPanel.add(clearButton, gbc);
         gbc.gridy = 3;
         jPanel.add(exitButton, gbc);
-        textField.setLocation(160,100);
+        textField.setLocation(160,60);
         textField.setSize(700,20);
         this.add(textField);
-        submitButton.setLocation(90,100);
+        submitButton.setLocation(90,60);
         submitButton.setSize(60,20);
         this.add(submitButton);
         rootCont.add(jPanel, BorderLayout.CENTER);
@@ -86,8 +85,47 @@ public class MyWindow extends JFrame implements ActionListener {
 
     private final MainViewComponent mainViewComponent = new MainViewComponent();
 
-    private void drawFigures() {
+    private void showSubclasses(){
+        int x = 50;
+        int y = 130;
+        int width = 80;
+        int height = 80;
+        for (final OWLSubClassOfAxiom subClasse : owlModelManager.getActiveOntology().getAxioms(AxiomType.SUBCLASS_OF))
+        {
+            if (subClasse.getSuperClass() instanceof OWLClass
+                    && subClasse.getSubClass() instanceof OWLClass)
+            {
+                String subclass = subClasse.getSubClass().toString().split("#")[1];
+                subclass = subclass.substring(0, subclass.length()-1);
 
+                String superclass = subClasse.getSuperClass().toString().split("#")[1];
+                superclass = superclass.substring(0, superclass.length()-1);
+
+                Graphics gr = this.getGraphics();
+
+                gr.setColor(GeneratorService.randomColor());
+                gr.drawString(subclass, x, y);
+                gr.drawOval(x,y + 10, width, height);
+                gr.fillOval(x,y + 10, width, height);
+
+                gr.setColor(GeneratorService.randomColor());
+                gr.drawString(superclass, x + 110, y);
+                gr.drawRect(x + 110,y + 10, width, height);
+                gr.fillRect(x + 110,y + 10 , width, height);
+
+                y = y + 110;
+                if (y > this.getHeight()-100){
+                    y = 130;
+                    x = x + 300;
+                }
+
+                log.info(subClasse.getSubClass()
+                        + " extends " + subClasse.getSuperClass());
+            }
+        }
+    }
+
+    private void drawFigures() {
 
         if (!isClearClicked){
         if (isShowFiguresClicked) {
@@ -126,9 +164,12 @@ public class MyWindow extends JFrame implements ActionListener {
                 cnt++;
             }
         }
-        if (isShowSumClicked){
-            showSummary();
-        }
+            if (isShowSumClicked) {
+                showSummary();
+            }else if (isRelationClicked){
+                showSubclasses();
+                isRelationClicked = false;
+            }
         }
         log.info("Figure is drawn");
     }
@@ -186,12 +227,10 @@ public class MyWindow extends JFrame implements ActionListener {
                         paint(this.getGraphics());
                     }
                     break;
-                case "ShowSummary":
-                    isShowSumClicked = true;
-                    isShowFiguresClicked = false;
-                    isClearClicked = false;
-                    paint(this.getGraphics());
-                    log.info("Summary is clicked");
+                case "Show Relations":
+                    isRelationClicked = true;
+                    showSubclasses();
+                    log.info("Relations is clicked");
                     break;
 
                 case "Clear":
@@ -204,7 +243,7 @@ public class MyWindow extends JFrame implements ActionListener {
                     log.info("Fetched path " + path);
                     fetchOntology(path);
                     break;
-                case "Exit":
+                case "Minimize":
                     reply = JOptionPane.showConfirmDialog(this, "Are you sure to Minimize?", "Sure?", JOptionPane.YES_NO_OPTION);
                     if (reply == JOptionPane.YES_OPTION) {
                         this.dispose();
