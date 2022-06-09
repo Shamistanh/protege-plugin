@@ -249,6 +249,7 @@ public class Metrics extends JPanel implements ActionListener {
                         isShowFiguresClicked = true;
                         isShowSumClicked = false;
                         isClearClicked = false;
+                        isRelationClicked = false;
                         paint(this.getGraphics());
                     }
                     break;
