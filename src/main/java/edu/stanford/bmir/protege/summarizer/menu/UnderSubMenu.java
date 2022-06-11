@@ -1,10 +1,10 @@
-package edu.stanford.bmir.protege.examples.menu;
+package edu.stanford.bmir.protege.summarizer.menu;
 
 import java.awt.event.ActionEvent;
 
 import javax.swing.*;
 
-import edu.stanford.bmir.protege.examples.view.Metrics;
+import edu.stanford.bmir.protege.summarizer.view.Metrics;
 import org.protege.editor.owl.ui.action.ProtegeOWLAction;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;

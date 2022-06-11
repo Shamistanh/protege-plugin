@@ -1,4 +1,4 @@
-package edu.stanford.bmir.protege.examples.figures;
+package edu.stanford.bmir.protege.summarizer.figures;
 
 import java.util.Arrays;
 import java.util.Collections;

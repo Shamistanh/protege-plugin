@@ -1,7 +1,7 @@
-package edu.stanford.bmir.protege.examples.service;
+package edu.stanford.bmir.protege.summarizer.service;
 
-import edu.stanford.bmir.protege.examples.view.GeneratorService;
-import edu.stanford.bmir.protege.examples.view.Metrics;
+import edu.stanford.bmir.protege.summarizer.view.GeneratorService;
+import edu.stanford.bmir.protege.summarizer.view.Metrics;
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntology;

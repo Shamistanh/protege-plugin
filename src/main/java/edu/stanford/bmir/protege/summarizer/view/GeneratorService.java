@@ -1,10 +1,10 @@
-package edu.stanford.bmir.protege.examples.view;
+package edu.stanford.bmir.protege.summarizer.view;
 
 
 
-import edu.stanford.bmir.protege.examples.figures.*;
-import edu.stanford.bmir.protege.examples.figures.Point;
-import edu.stanford.bmir.protege.examples.figures.Rectangle;
+import edu.stanford.bmir.protege.summarizer.figures.*;
+import edu.stanford.bmir.protege.summarizer.figures.Point;
+import edu.stanford.bmir.protege.summarizer.figures.Rectangle;
 
 import javax.swing.*;
 import java.awt.*;

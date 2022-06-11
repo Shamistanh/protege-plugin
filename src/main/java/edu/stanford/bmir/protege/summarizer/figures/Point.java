@@ -1,4 +1,4 @@
-package edu.stanford.bmir.protege.examples.figures;
+package edu.stanford.bmir.protege.summarizer.figures;
 
 public class Point {
     int x ;

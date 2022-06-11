@@ -1,6 +1,7 @@
-package edu.stanford.bmir.protege.examples.view;
+package edu.stanford.bmir.protege.summarizer.view;
 
-import edu.stanford.bmir.protege.examples.figures.Circle;
+import edu.stanford.bmir.protege.summarizer.figures.Circle;
+import edu.stanford.bmir.protege.summarizer.service.RelationViewerService;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 public class MyWindow extends JFrame implements ActionListener {
     private OWLModelManager owlModelManager;
+    private RelationViewerService relationViewerService = new RelationViewerService();
     private Boolean isClearClicked = true;
     private Boolean isShowFiguresClicked = false;
     private Boolean isShowSumClicked = false;
@@ -85,46 +87,6 @@ public class MyWindow extends JFrame implements ActionListener {
 
     private final MainViewComponent mainViewComponent = new MainViewComponent();
 
-    private void showSubclasses(){
-        int x = 50;
-        int y = 130;
-        int width = 80;
-        int height = 80;
-        for (final OWLSubClassOfAxiom subClasse : owlModelManager.getActiveOntology().getAxioms(AxiomType.SUBCLASS_OF))
-        {
-            if (subClasse.getSuperClass() instanceof OWLClass
-                    && subClasse.getSubClass() instanceof OWLClass)
-            {
-                String subclass = subClasse.getSubClass().toString().split("#")[1];
-                subclass = subclass.substring(0, subclass.length()-1);
-
-                String superclass = subClasse.getSuperClass().toString().split("#")[1];
-                superclass = superclass.substring(0, superclass.length()-1);
-
-                Graphics gr = this.getGraphics();
-
-                gr.setColor(GeneratorService.randomColor());
-                gr.drawString(subclass, x, y);
-                gr.drawOval(x,y + 10, width, height);
-                gr.fillOval(x,y + 10, width, height);
-
-                gr.setColor(GeneratorService.randomColor());
-                gr.drawString(superclass, x + 110, y);
-                gr.drawRect(x + 110,y + 10, width, height);
-                gr.fillRect(x + 110,y + 10 , width, height);
-
-                y = y + 110;
-                if (y > this.getHeight()-100){
-                    y = 130;
-                    x = x + 300;
-                }
-
-                log.info(subClasse.getSubClass()
-                        + " extends " + subClasse.getSuperClass());
-            }
-        }
-    }
-
     private void drawFigures() {
 
         if (!isClearClicked){
@@ -167,7 +129,7 @@ public class MyWindow extends JFrame implements ActionListener {
             if (isShowSumClicked) {
                 showSummary();
             }else if (isRelationClicked){
-                showSubclasses();
+                relationViewerService.showSubclasses(owlModelManager.getActiveOntology(),this.getGraphics(), this.getHeight());
                 isRelationClicked = false;
             }
         }
@@ -229,7 +191,7 @@ public class MyWindow extends JFrame implements ActionListener {
                     break;
                 case "Show Relations":
                     isRelationClicked = true;
-                    showSubclasses();
+                    relationViewerService.showSubclasses(owlModelManager.getActiveOntology(),this.getGraphics(), this.getHeight());
                     log.info("Relations is clicked");
                     break;
 
