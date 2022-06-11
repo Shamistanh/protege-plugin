@@ -1,4 +1,4 @@
-package edu.stanford.bmir.protege.examples.menu;
+package edu.stanford.bmir.protege.summarizer.menu;
 
 import java.awt.event.ActionEvent;
 
