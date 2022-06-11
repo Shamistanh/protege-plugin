@@ -1,10 +1,8 @@
 package edu.stanford.bmir.protege.summarizer.view;
 
 import edu.stanford.bmir.protege.summarizer.figures.Circle;
-import edu.stanford.bmir.protege.summarizer.service.RelationViewerService;
+import edu.stanford.bmir.protege.summarizer.service.SummarizerService;
 import org.protege.editor.owl.model.OWLModelManager;
-import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class MyWindow extends JFrame implements ActionListener {
     private OWLModelManager owlModelManager;
-    private RelationViewerService relationViewerService = new RelationViewerService();
+    private SummarizerService summarizerService = new SummarizerService();
     private Boolean isClearClicked = true;
     private Boolean isShowFiguresClicked = false;
     private Boolean isShowSumClicked = false;
@@ -72,10 +70,10 @@ public class MyWindow extends JFrame implements ActionListener {
         jPanel.add(clearButton, gbc);
         gbc.gridy = 3;
         jPanel.add(exitButton, gbc);
-        textField.setLocation(160,60);
+        textField.setLocation(160,50);
         textField.setSize(700,20);
         this.add(textField);
-        submitButton.setLocation(90,60);
+        submitButton.setLocation(90,50);
         submitButton.setSize(60,20);
         this.add(submitButton);
         rootCont.add(jPanel, BorderLayout.CENTER);
@@ -129,7 +127,7 @@ public class MyWindow extends JFrame implements ActionListener {
             if (isShowSumClicked) {
                 showSummary();
             }else if (isRelationClicked){
-                relationViewerService.showSubclasses(owlModelManager.getActiveOntology(),this.getGraphics(), this.getHeight());
+                summarizerService.showSubclasses(owlModelManager.getActiveOntology(),this.getGraphics(), this.getHeight());
                 isRelationClicked = false;
             }
         }
@@ -153,22 +151,6 @@ public class MyWindow extends JFrame implements ActionListener {
             jPanel.setVisible(false);
         }
     }
-    private void fetchOntology(String path) {
-
-        try {
-            OWLOntologyManager man = OWLManager.createOWLOntologyManager();
-            IRI webOntology = IRI.create(path);
-            OWLOntology o = man.loadOntology(webOntology);
-            owlModelManager.setActiveOntology(o);
-        }catch (Exception ex){
-
-            log.error("Following error occurred " + ex.getMessage());
-            f=new JFrame();
-            JOptionPane.showMessageDialog(f, "We are facing problem while fetching ontology");
-            ex.printStackTrace();
-
-        }
-    }
     @Override
     public void paint(Graphics g) {
         super.paint(g);
@@ -186,12 +168,13 @@ public class MyWindow extends JFrame implements ActionListener {
                         isShowFiguresClicked = true;
                         isShowSumClicked = false;
                         isClearClicked = false;
+                        isRelationClicked = false;
                         paint(this.getGraphics());
                     }
                     break;
                 case "Show Relations":
                     isRelationClicked = true;
-                    relationViewerService.showSubclasses(owlModelManager.getActiveOntology(),this.getGraphics(), this.getHeight());
+                    summarizerService.showSubclasses(owlModelManager.getActiveOntology(),this.getGraphics(), this.getHeight());
                     log.info("Relations is clicked");
                     break;
 
@@ -203,7 +186,7 @@ public class MyWindow extends JFrame implements ActionListener {
                 case "Fetch":
                     String path = textField.getText();
                     log.info("Fetched path " + path);
-                    fetchOntology(path);
+                    summarizerService.fetchOntology(path, owlModelManager, f);
                     break;
                 case "Minimize":
                     reply = JOptionPane.showConfirmDialog(this, "Are you sure to Minimize?", "Sure?", JOptionPane.YES_NO_OPTION);

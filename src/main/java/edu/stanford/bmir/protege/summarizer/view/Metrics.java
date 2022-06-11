@@ -1,12 +1,10 @@
 package edu.stanford.bmir.protege.summarizer.view;
 
 import edu.stanford.bmir.protege.summarizer.figures.Circle;
-import edu.stanford.bmir.protege.summarizer.service.RelationViewerService;
+import edu.stanford.bmir.protege.summarizer.service.SummarizerService;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.model.event.EventType;
 import org.protege.editor.owl.model.event.OWLModelManagerListener;
-import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +20,7 @@ public class Metrics extends JPanel implements ActionListener {
     private static final Logger log = LoggerFactory.getLogger(Metrics.class);
 
     private JButton showButton = new JButton("Show");
-    private RelationViewerService relationViewerService = new RelationViewerService();
+    private SummarizerService summarizerService = new SummarizerService();
 
     private Boolean isClearClicked = true;
     private Boolean isShowFiguresClicked = false;
@@ -111,25 +109,10 @@ public class Metrics extends JPanel implements ActionListener {
         textComponentForOntology.setVerticalTextPosition(SwingConstants.CENTER);
     }
 
-    private void fetchOntology(String path) {
-        try {
-            OWLOntologyManager man = OWLManager.createOWLOntologyManager();
-            IRI webOntology = IRI.create(path);
-            OWLOntology o = man.loadOntology(webOntology);
-            owlModelManager.setActiveOntology(o);
-        }catch (Exception ex){
-
-        log.error("Following error occurred " + ex.getMessage());
-            f=new JFrame();
-            JOptionPane.showMessageDialog(f, "We are facing problem while fetching ontology");
-            ex.printStackTrace();
-        }
-    }
 
     private void drawFigures() {
         if (!isClearClicked) {
             if (isShowFiguresClicked) {
-                int cnt = 0;
                 List<String> names = owlModelManager.getActiveOntology()
                         .getClassesInSignature()
                         .stream().map(Object::toString).map(s -> {
@@ -150,7 +133,6 @@ public class Metrics extends JPanel implements ActionListener {
                     if (this.getWidth() < x-10){
                         y = y + 70;
                         x = 40;
-                        cnt = 0;
                     }
                     log.info(name);
                     Circle shape = GeneratorService.randomCircle();
@@ -161,13 +143,12 @@ public class Metrics extends JPanel implements ActionListener {
                         gr.fillOval(x, y,width, width);
                     }
                     x = x + 110;
-                    cnt++;
                 }
             }
             if (isShowSumClicked) {
                 showSummary();
             }else if (isRelationClicked){
-                relationViewerService.showSubclasses(owlModelManager.getActiveOntology(),this.getGraphics(), this.getHeight());
+                summarizerService.showSubclasses(owlModelManager.getActiveOntology(),this.getGraphics(), this.getHeight());
                 isRelationClicked = false;
             }
         }
@@ -219,7 +200,7 @@ public class Metrics extends JPanel implements ActionListener {
                     break;
                 case "Show Relations":
                     isRelationClicked = true;
-                    relationViewerService.showSubclasses(owlModelManager.getActiveOntology(),this.getGraphics(), this.getHeight());
+                    summarizerService.showSubclasses(owlModelManager.getActiveOntology(),this.getGraphics(), this.getHeight());
                     log.info("Relations is clicked");
                     break;
 
@@ -241,7 +222,7 @@ public class Metrics extends JPanel implements ActionListener {
                 case "Fetch":
                     String path = textField.getText();
                     log.info("Fetched path " + path);
-                    fetchOntology(path);
+                    summarizerService.fetchOntology(path, owlModelManager, f);
                     break;
 
                 case "Exit":

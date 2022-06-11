@@ -2,16 +2,16 @@ package edu.stanford.bmir.protege.summarizer.service;
 
 import edu.stanford.bmir.protege.summarizer.view.GeneratorService;
 import edu.stanford.bmir.protege.summarizer.view.Metrics;
-import org.semanticweb.owlapi.model.AxiomType;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.protege.editor.owl.model.OWLModelManager;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.awt.*;
 
-public class RelationViewerService {
+public class SummarizerService {
     private static final Logger log = LoggerFactory.getLogger(Metrics.class);
 
     public void showSubclasses(OWLOntology owlOntology, Graphics gr, int windowHeight){
@@ -41,6 +41,21 @@ public class RelationViewerService {
             }
         }
     }
+    public void fetchOntology(String path, OWLModelManager owlModelManager, JFrame f) {
+        try {
+            OWLOntologyManager man = OWLManager.createOWLOntologyManager();
+            IRI webOntology = IRI.create(path);
+            OWLOntology o = man.loadOntology(webOntology);
+            owlModelManager.setActiveOntology(o);
+        }catch (Exception ex){
+
+            log.error("Following error occurred " + ex.getMessage());
+            f=new JFrame();
+            JOptionPane.showMessageDialog(f, "We are facing problem while fetching ontology");
+            ex.printStackTrace();
+        }
+    }
+
 
 
     private void drawFigure(Graphics gr, String subclass, String superclass, int x, int y, int width, int height){
