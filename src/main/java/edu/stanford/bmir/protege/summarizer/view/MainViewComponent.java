@@ -31,11 +31,4 @@ public class MainViewComponent extends AbstractOWLViewComponent{
 		metricsComponent.dispose();
 	}
 
-
-
-    public static Circle randomCircle() {
-        return new Circle((int) (Math.random() * 1.5) != 0, randomColor(), randomPoint(), (int) (Math.random() * 50), (int) (Math.random() * 50));
-    }
-
-
 }

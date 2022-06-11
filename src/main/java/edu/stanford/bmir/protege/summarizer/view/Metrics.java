@@ -113,17 +113,7 @@ public class Metrics extends JPanel implements ActionListener {
     private void drawFigures() {
         if (!isClearClicked) {
             if (isShowFiguresClicked) {
-                List<String> names = owlModelManager.getActiveOntology()
-                        .getClassesInSignature()
-                        .stream().map(Object::toString).map(s -> {
-                            String word = s;
-                            String[] split = s.split("#");
-                            if (split.length==2){
-                                word = split[1];
-                                word = word.substring(0, word.length() - 1);
-                            }
-                            return word;
-                        }).collect(Collectors.toList());
+                List<String> names = getOntologyNames();
                 Graphics gr = this.getGraphics();
                 int y = 100;
                 int width = 50;
@@ -156,6 +146,19 @@ public class Metrics extends JPanel implements ActionListener {
         log.info("Figure is drawn");
     }
 
+    private List<String> getOntologyNames() {
+       return owlModelManager.getActiveOntology()
+                .getClassesInSignature()
+                .stream().map(Object::toString).map(s -> {
+            String word = s;
+            String[] split = s.split("#");
+            if (split.length==2){
+                word = split[1];
+                word = word.substring(0, word.length() - 1);
+            }
+            return word;
+        }).collect(Collectors.toList());
+    }
 
 
     private void showSummary() {
@@ -211,13 +214,7 @@ public class Metrics extends JPanel implements ActionListener {
                     break;
                 case "Maximize":
                     log.info("Maximize button is clicked");
-                    MyWindow window = new MyWindow(owlModelManager);
-                    window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                    window.setSize(900, 900);
-                    window.setMinimumSize(new Dimension(150, 150));
-                    window.setLocationRelativeTo(null);
-                    window.setVisible(true);
-                    window.setResizable(false);
+                     makeWindow();
                     break;
                 case "Fetch":
                     String path = textField.getText();
@@ -233,5 +230,14 @@ public class Metrics extends JPanel implements ActionListener {
             }
         }
 
+    }
+    private void makeWindow(){
+        MyWindow window = new MyWindow(owlModelManager);
+        window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        window.setSize(900, 900);
+        window.setMinimumSize(new Dimension(150, 150));
+        window.setLocationRelativeTo(null);
+        window.setVisible(true);
+        window.setResizable(false);
     }
 }

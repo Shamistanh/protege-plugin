@@ -27,15 +27,6 @@ public class GeneratorService extends JFrame {
 
     }
 
-    public int randomLenght() {
-        return (int) (Math.random() * 50);
-
-    }
-
-    public Rectangle randomRectangle() {
-        return new Rectangle((int) (Math.random() * 1.5) != 0, randomColor(), randomPoint(), (int) (Math.random() * 50), (int) (Math.random() * 50));
-    }
-
     public static Circle randomCircle() {
         return new Circle((int) (Math.random() * 1.5) != 0, randomColor(), randomPoint(), (int) (Math.random() * 50), (int) (Math.random() * 50));
     }
