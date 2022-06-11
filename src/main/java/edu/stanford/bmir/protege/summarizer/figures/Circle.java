@@ -4,8 +4,8 @@ import java.awt.*;
 
 public class Circle extends Shape {
 
-  public Circle(Boolean isFilled, Color color, Point point, int width, int height){
-    super(point,color,width,height,isFilled);
+  public Circle(Boolean isFilled, Color color, int width, int height){
+    super(color,width,height,isFilled);
     setName("circle");
   }
 }

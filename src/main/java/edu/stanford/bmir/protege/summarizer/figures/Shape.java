@@ -4,7 +4,6 @@ import java.awt.*;
 
 public abstract class Shape {
     String name;
-    Point p;
     Color color;
     int width;
     int height;
@@ -14,7 +13,6 @@ public abstract class Shape {
     public String toString() {
         return "Shape{" +
                 "name='" + name + '\'' +
-                ", p=" + p +
                 ", color=" + color +
                 ", width=" + width +
                 ", height=" + height +
@@ -26,8 +24,7 @@ public abstract class Shape {
 
     }
 
-    public Shape(Point p, Color color, int width, int height, boolean isFilled) {
-        this.p = p;
+    public Shape( Color color, int width, int height, boolean isFilled) {
         this.color = color;
         this.width = width;
         this.height = height;
@@ -36,10 +33,6 @@ public abstract class Shape {
 
     void setName(String name){
         this.name = name;
-    }
-
-    public Point getP() {
-        return p;
     }
 
     public Color getColor() {

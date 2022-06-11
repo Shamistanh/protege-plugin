@@ -7,9 +7,7 @@ import java.util.Random;
 
 public enum Figure {
     Circle,
-    Ellipsis,
-    Rectangle,
-    Triangle;
+    Rectangle;
 
     private static final List<Figure> VALUES =
             Collections.unmodifiableList(Arrays.asList(values()));

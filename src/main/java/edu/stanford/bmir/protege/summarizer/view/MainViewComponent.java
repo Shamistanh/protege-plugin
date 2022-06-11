@@ -2,13 +2,9 @@ package edu.stanford.bmir.protege.summarizer.view;
 
 import java.awt.*;
 
-import edu.stanford.bmir.protege.summarizer.figures.Circle;
 import org.protege.editor.owl.ui.view.AbstractOWLViewComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static edu.stanford.bmir.protege.summarizer.view.GeneratorService.randomColor;
-import static edu.stanford.bmir.protege.summarizer.view.GeneratorService.randomPoint;
 
 public class MainViewComponent extends AbstractOWLViewComponent{
 
