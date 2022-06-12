@@ -1,6 +1,7 @@
-# protege-plugin-examples
+# protege-summarizer-plugin
 
-This repository contains example code for developing a tab, view, or menu plug-in for the Protege Desktop ontology editor (*versions 5.0.0 and higher*).  The Maven POM file in the top-level directory demonstrates one possible method for packaging plug-in code into the required OSGi bundle format using the [Maven Bundle Plugin](http://felix.apache.org/site/apache-felix-maven-bundle-plugin-bnd.html).
+This repository has been developed on [protege-plugin-example](https://github.com/protegeproject/protege-plugin-examples.git), and has implemented additional functionalities.
+This repository is a simple protege plugin for the Protege Desktop ontology editor (*versions 5.0.0 and higher*).  The Maven POM file in the top-level directory demonstrates one possible method for packaging plug-in code into the required OSGi bundle format using the [Maven Bundle Plugin](http://felix.apache.org/site/apache-felix-maven-bundle-plugin-bnd.html).
 
 #### Prerequisites
 
@@ -14,46 +15,41 @@ To build and run the examples, you must have the following items installed:
 
 1. Get a copy of the example code:
 
-        git clone https://github.com/protegeproject/protege-plugin-examples.git protege-plugin-examples
+        git clone https://github.com/Shamistanh/protege-plugin.git
     
-2. Change into the protege-plugin-examples directory.
+2. Change into the protege-plugin-summarizer directory.
 
 3. Type mvn clean package.  On build completion, the "target" directory will contain a protege.plugin.examples-${version}.jar file.
 
 4. Copy the JAR file from the target directory to the "plugins" subdirectory of your Protege distribution.
  
-#### View example plug-ins in Protege
+## Plugin features
 
-Launch your Protege distribution.  Select About from the Help menu to verify successful installation:
+#### How to Open Ontologies
+1. You can open existing owl file.
++ From 'File' Tab, click 'open' and find ontology from your local machine
++ Open owl file and move to Summarizer Tab
 
-![Protege Desktop About box](http://jvendetti.github.io/img/protege/protege%20about%20box.png)
+2. You can fetch an ontology from internet
++ Type path of ontology. We have used famous [pizza ontology](https://protege.stanford.edu/ontologies/pizza/pizza.owl) for testing
++ Press on 'Fetch' button, and that is all
 
-The examples bundle contains:
+#### What you can do with the ontology
 
-+ Two custom tabs - "Example Tab" and "Example Tab (2)".  Enable either tab via the Window | Tabs menu.
-+ One custom view - "Example view component".  If you enabled the Example Tab in the previous step, the Example view component will be visible on the right-hand side.  Alternatively, you can enable the view via Window | Views | Ontology views.
-+ Several custom menu items.  Expand the Tools menu to see the custom menu items.
-+ A custom top-level menu - "Example Menu".  The custom top-level menu appears in the main menu bar between the Server and Tools menus.  Select Example Menu to see several submenu items.
- 
-#### Example plug-in screenshots
+1. How To show elements
++ Click to 'Show Figures' tab.
++ Answer to question opened window
 
-Example Tab and Example view component:
+2. How to show relations
++ Click 'Show Relations' button
 
-![](http://jvendetti.github.io/img/protege/example-view-component.png)
+#### Changing Working screen
 
-Example Tab (2):
+1. Press on 'Maximize' button, you will see bigger screen
+2. Press on 'Minimize' screen to close that screen
 
-![](http://jvendetti.github.io/img/protege/example-tab.png)
+#### Notes:
++ 'Clear' button what you have drawn before.
++ 'Exit' will directly close application.
 
-Example menu items:
-
-![](http://jvendetti.github.io/img/protege/example-menu-items.png)
-
-Example menu:
-
-![](http://jvendetti.github.io/img/protege/example-menu.png)
-
-#### Questions
-
-If you have questions about developing Protege plug-ins, please navigate to the main Protege website and subscribe to the [Protege Developer Support mailing list](http://protege.stanford.edu/support.php#mailingListSupport).  After subscribing, send messages to protege-dev at lists.stanford.edu.
-
+<em>Summarizer tab in menu bar of application is under development, We are planning to add there summary and ontology editing functionalities</em>
